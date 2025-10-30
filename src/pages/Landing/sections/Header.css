@@ -97,3 +97,8 @@
   background: var(--accent-primary);
   transform: translateY(-1px);
 }
+
+.btnLogin, .btnRegistr {
+    text-decoration: none; 
+    display: inline-block; 
+}

@@ -1,5 +1,6 @@
 import logo from "../../../assets/logo.png";
 import "./Header.css";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -17,8 +18,8 @@ export default function Header() {
         </nav>
 
         <div className="header__buttons">
-          <button className="btnLogin">Вхід</button>
-          <button className="btnRegistr">Реєстрація</button>
+          <Link to="/login" className="btnLogin">Вхід</Link>
+          <Link to="/register" className="btnRegistr">Реєстрація</Link>
         </div>
       </div>
     </header>
