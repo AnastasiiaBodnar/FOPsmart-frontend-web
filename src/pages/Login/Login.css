@@ -1,0 +1,97 @@
+.login {
+  min-height: calc(100vh - 120px);
+  background: var(--background);
+  display: grid;
+  place-items: start center;
+  padding: 40px 16px;
+}
+
+.login__brand {
+  font-weight: 900;
+  font-size: 28px;
+  color: var(--dark-main);
+  margin-bottom: 16px;
+}
+
+.login__card {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.08);
+  display: grid;
+  gap: 14px;
+}
+
+.login__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.login__head h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--dark-main);
+}
+
+.login__link {
+  color: var(--dark-main);
+  text-decoration: none;
+  font-weight: 600;
+  opacity: .85;
+}
+.login__link:hover { color: var(--accent-primary); }
+
+.field { display: grid; gap: 6px; }
+
+.field input {
+  width: 100%;
+  background: #eeeeef;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 16px;
+  color: var(--dark-main);
+  outline: none;
+  transition: box-shadow .2s ease, background .2s ease;
+}
+.field input:focus {
+  background: #f5f6f8;
+  box-shadow: 0 0 0 2px var(--accent-primary);
+}
+.field__error { color: #e11d48; font-size: 12px; }
+
+.login__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+.login__forgot {
+  color: var(--dark-secondary);
+  text-decoration: none;
+  font-size: 14px;
+}
+.login__forgot:hover { color: var(--accent-primary); }
+
+.login__btn {
+  margin-top: 8px;
+  background: var(--accent-primary);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform .1s ease, filter .2s ease;
+}
+.login__btn:hover { filter: brightness(.95); transform: translateY(-1px); }
+.login__btn:active { transform: translateY(1px); }
+.login__btn:disabled { opacity: .55; cursor: not-allowed; transform: none; filter: none; }
+
+@media (max-width: 560px) {
+  .login__card { padding: 22px; border-radius: 16px; }
+  .login__head h2 { font-size: 20px; }
+}

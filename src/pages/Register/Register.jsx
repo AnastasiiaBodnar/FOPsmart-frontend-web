@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import "./Register.css";
+import { Link } from "react-router-dom";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -55,7 +56,7 @@ export default function Register() {
       <form className="register__card" onSubmit={onSubmit} noValidate>
         <div className="register__head">
           <h2>Реєстрація</h2>
-          <a href="#login" className="register__link">Є акаунт? Увійти</a>
+          <Link to="/login" className="register__link">Є акаунт? Увійти</Link>
         </div>
 
         <div className="row-2">
