@@ -28,7 +28,6 @@ export default function Login() {
   const onSubmit = (e) => {
     e.preventDefault();
     if (!isValid) return;
-    // TODO: виклик API логіну
     console.log("login payload:", form);
     alert("Логін успішний (поки без бекенда)");
   };

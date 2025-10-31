@@ -5,6 +5,9 @@
   --dark-main: #1E1E1E;
   --dark-secondary: #2A2A2F;
   --accent-primary: #7C4DFF;
+  --grey: #EAEAEA;
+  --dark-grey: #7E7E82;
+  --light-grey: #969696;
 }
 
 * {

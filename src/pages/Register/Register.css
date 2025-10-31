@@ -1,5 +1,5 @@
 .register {
-  min-height: calc(100vh - 120px); 
+  min-height: 100vh;
   background: var(--background);
   display: grid;
   place-items: start center;
@@ -14,6 +14,7 @@
 }
 
 .register__card {
+  height: 500px;
   width: 100%;
   max-width: 520px;
   background: #fff;
@@ -52,7 +53,7 @@
 
 .field input {
   width: 100%;
-  background: #eeeeef;          
+  background: var(--grey);          
   border: none;
   border-radius: 12px;
   padding: 14px 16px;
