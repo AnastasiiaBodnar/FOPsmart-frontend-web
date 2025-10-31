@@ -1,0 +1,104 @@
+.header {
+  background: var(--background);
+  padding: 20px 0;
+}
+
+.header__container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 0 40px;
+}
+
+.header__logo {
+  justify-self: start;
+  text-decoration: none;
+}
+
+.header__nav {
+  justify-self: center;
+}
+
+.header__buttons {
+  justify-self: end;
+}
+
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header__logo img {
+  height: 40px;
+}
+
+.logoText {
+  margin-left: -15px;
+  font-weight: 900;
+  font-size: 25px;
+  color: var(--dark-main);
+}
+
+.header__nav {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex: 1;
+}
+
+.header__nav a {
+  text-decoration: none;
+  color: var(--dark-secondary);
+  font-weight: 500;
+  font-size: 20px;
+  transition: color 0.2s ease;
+}
+
+.header__nav a:hover {
+  color: var(--accent-primary);
+}
+
+.header__buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btnLogin {
+  background: transparent;
+  font-weight: 700;
+  border: none;
+  font-size: 20px;
+  color: var(--dark-main);
+  cursor: pointer;
+  padding: 6px 10px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.btnLogin:hover {
+  color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+.btnRegistr {
+  background: var(--dark-main);
+  color: var(--background);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 550;
+  font-size: 20px;
+  cursor: pointer;
+   transition: background 0.25s ease, transform 0.1s ease;
+}
+
+.btnRegistr:hover {
+  background: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+.btnLogin, .btnRegistr {
+    text-decoration: none; 
+    display: inline-block; 
+}
