@@ -1,82 +1,35 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { Link } from "react-router-dom";
-//import { authAPI, ApiError } from "../../services/api";
 
 export default function Login() {
-  const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [touched, setTouched] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState("");
 
   const errors = useMemo(() => {
     const e = {};
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       e.email = "Невалідний email";
     }
-    if (form.password && form.password.length < 6) {
-      e.password = "Мінімум 6 символів";
+    if (form.password && form.password.length < 8) {
+      e.password = "Мінімум 8 символів";
     }
     return e;
   }, [form]);
 
   const isValid =
-    form.email && form.password.length >= 6 && Object.keys(errors).length === 0;
+    form.email && form.password.length >= 8 && Object.keys(errors).length === 0;
 
-  const onChange = (e) => {
+  const onChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-    setServerError("");
-  };
-
   const onBlur = (e) =>
     setTouched((t) => ({ ...t, [e.target.name]: true }));
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    if (!isValid || isLoading) return;
-
-    // ----- ЛОГІКУ ТИМЧАСОВО ВИМКНЕНО, ЩОБ ВИПРАВИТИ ПОМИЛКУ -----
-    /*
-    setIsLoading(true);
-    setServerError("");
-
-    try {
-      const response = await authAPI.login(form.email, form.password);
-      
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      
-      if (response.fopLimit) {
-        localStorage.setItem('fopLimit', JSON.stringify(response.fopLimit));
-      }
-
-      navigate('/dashboard');
-      
-    } catch (error) {
-      // Цей рядок 'ApiError' викликав помилку, бо імпорт закоментовано
-      if (error instanceof ApiError) {
-        if (error.status === 401) {
-          setServerError("Невірний email або пароль");
-        } else if (error.status === 0) {
-          setServerError("Помилка з'єднання з сервером");
-        } else {
-          setServerError(error.message || "Виникла помилка при вході");
-        }
-      } else {
-        setServerError("Несподівана помилка. Спробуйте ще раз");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-    */
-    // ----- КІНЕЦЬ ЗАКОМЕНТОВАНОГО БЛОКУ -----
-
-    // Тимчасовий код, щоб перевірити, що форма працює
-    console.log("Форма відправлена! (Логіка вимкнена для тесту)", form);
-    alert("Форма працює! (Логіка вимкнена для тесту)");
-    setIsLoading(false); // Додамо це, щоб кнопка не "зависла"
+    if (!isValid) return;
+    console.log("login payload:", form);
+    alert("Логін успішний (поки без бекенда)");
   };
 
   return (
@@ -89,12 +42,6 @@ export default function Login() {
           <Link to="/register" className="login__link">Немає акаунту? Зареєструйтеся</Link>
         </div>
 
-        {serverError && (
-          <div className="login__error">
-            {serverError}
-          </div>
-        )}
-
         <label className="field">
           <input
             type="email"
@@ -104,7 +51,6 @@ export default function Login() {
             onChange={onChange}
             onBlur={onBlur}
             aria-invalid={!!errors.email}
-            disabled={isLoading}
           />
           {touched.email && errors.email && (
             <span className="field__error">{errors.email}</span>
@@ -120,7 +66,6 @@ export default function Login() {
             onChange={onChange}
             onBlur={onBlur}
             aria-invalid={!!errors.password}
-            disabled={isLoading}
           />
           {touched.password && errors.password && (
             <span className="field__error">{errors.password}</span>
@@ -131,8 +76,8 @@ export default function Login() {
           <a href="#" className="login__forgot">Забули пароль?</a>
         </div>
 
-        <button className="login__btn" disabled={!isValid || isLoading}>
-          {isLoading ? "Завантаження..." : "Увійти"}
+        <button className="login__btn" disabled={!isValid}>
+          Увійти
         </button>
       </form>
     </section>
