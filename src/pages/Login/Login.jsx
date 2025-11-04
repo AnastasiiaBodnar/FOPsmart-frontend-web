@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { Link } from "react-router-dom";
-import { authAPI, ApiError } from "../../services/api";
+//import { authAPI, ApiError } from "../../services/api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -37,6 +37,8 @@ export default function Login() {
     e.preventDefault();
     if (!isValid || isLoading) return;
 
+    // ----- ЛОГІКУ ТИМЧАСОВО ВИМКНЕНО, ЩОБ ВИПРАВИТИ ПОМИЛКУ -----
+    /*
     setIsLoading(true);
     setServerError("");
 
@@ -53,6 +55,7 @@ export default function Login() {
       navigate('/dashboard');
       
     } catch (error) {
+      // Цей рядок 'ApiError' викликав помилку, бо імпорт закоментовано
       if (error instanceof ApiError) {
         if (error.status === 401) {
           setServerError("Невірний email або пароль");
@@ -67,6 +70,13 @@ export default function Login() {
     } finally {
       setIsLoading(false);
     }
+    */
+    // ----- КІНЕЦЬ ЗАКОМЕНТОВАНОГО БЛОКУ -----
+
+    // Тимчасовий код, щоб перевірити, що форма працює
+    console.log("Форма відправлена! (Логіка вимкнена для тесту)", form);
+    alert("Форма працює! (Логіка вимкнена для тесту)");
+    setIsLoading(false); // Додамо це, щоб кнопка не "зависла"
   };
 
   return (

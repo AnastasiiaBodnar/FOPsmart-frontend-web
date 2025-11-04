@@ -1,0 +1,25 @@
+# Ігноруємо папку з модулями (вони будуть встановлені всередині контейнера)
+node_modules
+
+dist
+dist-ssr
+
+# Лог-файли
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Локальні змінні оточення
+.env.local
+.env.*.local
+
+# Ігноруємо Git
+.git
+.gitignore
+
+# Ігноруємо файли Docker
+Dockerfile
+.dockerignore
+
+# Системні файли
+.DS_Store
