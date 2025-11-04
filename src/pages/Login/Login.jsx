@@ -1,10 +1,17 @@
 import { useState, useMemo } from "react";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+const API_URL = import.meta.env.PROD 
+  ? "https://fopsmart-4030403a47a5.herokuapp.com" 
+  : "";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [touched, setTouched] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
 
   const errors = useMemo(() => {
     const e = {};
@@ -22,14 +29,46 @@ export default function Login() {
 
   const onChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  
   const onBlur = (e) =>
     setTouched((t) => ({ ...t, [e.target.name]: true }));
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    if (!isValid) return;
-    console.log("login payload:", form);
-    alert("Логін успішний (поки без бекенда)");
+    if (!isValid || isLoading) return;
+
+    setIsLoading(true);
+    setApiError("");
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Помилка входу");
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      navigate("/dashboard");
+
+    } catch (error) {
+      console.error("Login error:", error);
+      setApiError(error.message || "Невірний email або пароль");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -42,6 +81,12 @@ export default function Login() {
           <Link to="/register" className="login__link">Немає акаунту? Зареєструйтеся</Link>
         </div>
 
+        {apiError && (
+          <div className="api-error">
+            {apiError}
+          </div>
+        )}
+
         <label className="field">
           <input
             type="email"
@@ -51,6 +96,7 @@ export default function Login() {
             onChange={onChange}
             onBlur={onBlur}
             aria-invalid={!!errors.email}
+            disabled={isLoading}
           />
           {touched.email && errors.email && (
             <span className="field__error">{errors.email}</span>
@@ -66,6 +112,7 @@ export default function Login() {
             onChange={onChange}
             onBlur={onBlur}
             aria-invalid={!!errors.password}
+            disabled={isLoading}
           />
           {touched.password && errors.password && (
             <span className="field__error">{errors.password}</span>
@@ -76,8 +123,8 @@ export default function Login() {
           <a href="#" className="login__forgot">Забули пароль?</a>
         </div>
 
-        <button className="login__btn" disabled={!isValid}>
-          Увійти
+        <button className="login__btn" disabled={!isValid || isLoading}>
+          {isLoading ? "Вхід..." : "Увійти"}
         </button>
       </form>
     </section>

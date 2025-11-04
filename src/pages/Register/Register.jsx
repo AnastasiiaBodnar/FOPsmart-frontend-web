@@ -1,8 +1,13 @@
 import { useState, useMemo } from "react";
 import "./Register.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+const API_URL = import.meta.env.PROD 
+  ? "https://fopsmart-4030403a47a5.herokuapp.com" 
+  : "";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -12,10 +17,12 @@ export default function Register() {
     confirm: "",
   });
   const [touched, setTouched] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
 
   const errors = useMemo(() => {
     const e = {};
-    if (!form.firstName.trim()) e.firstName = "Вкажіть ім’я";
+    if (!form.firstName.trim()) e.firstName = "Вкажіть ім'я";
     if (!form.lastName.trim()) e.lastName = "Вкажіть прізвище";
     if (!form.fopGroup) e.fopGroup = "Оберіть групу ФОП";
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
@@ -42,11 +49,45 @@ export default function Register() {
   const onBlur = (e) =>
     setTouched((t) => ({ ...t, [e.target.name]: true }));
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    if (!isValid) return;
-    console.log("register payload:", form);
-    alert("Форма валідна (далі підключимо бекенд).");
+    if (!isValid || isLoading) return;
+
+    setIsLoading(true);
+    setApiError("");
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          fopGroup: parseInt(form.fopGroup),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Помилка реєстрації");
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      navigate("/dashboard");
+
+    } catch (error) {
+      console.error("Registration error:", error);
+      setApiError(error.message || "Щось пішло не так. Спробуйте ще раз.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,9 +100,14 @@ export default function Register() {
           <Link to="/login" className="register__link">Є акаунт? Увійти</Link>
         </div>
 
-        <div className="row-2">
+        {apiError && (
+          <div className="api-error">
+            {apiError}
+          </div>
+        )}
 
-        <label className="field">
+        <div className="row-2">
+          <label className="field">
             <input
               type="text"
               name="lastName"
@@ -70,22 +116,23 @@ export default function Register() {
               onChange={onChange}
               onBlur={onBlur}
               aria-invalid={!!errors.lastName}
+              disabled={isLoading}
             />
             {touched.lastName && errors.lastName && (
               <span className="field__error">{errors.lastName}</span>
             )}
           </label>
 
-
           <label className="field">
             <input
               type="text"
               name="firstName"
-              placeholder="Ім’я"
+              placeholder="Ім'я"
               value={form.firstName}
               onChange={onChange}
               onBlur={onBlur}
               aria-invalid={!!errors.firstName}
+              disabled={isLoading}
             />
             {touched.firstName && errors.firstName && (
               <span className="field__error">{errors.firstName}</span>
@@ -100,11 +147,12 @@ export default function Register() {
             onChange={onChange}
             onBlur={onBlur}
             aria-invalid={!!errors.fopGroup}
+            disabled={isLoading}
           >
             <option value="">Група ФОП</option>
-            <option value="I">I група</option>
-            <option value="II">II група</option>
-            <option value="III">III група</option>
+            <option value="1">I група (до 505 676 грн/рік)</option>
+            <option value="2">II група (до 3 028 000 грн/рік)</option>
+            <option value="3">III група (до 7 000 000 грн/рік)</option>
           </select>
           {touched.fopGroup && errors.fopGroup && (
             <span className="field__error">{errors.fopGroup}</span>
@@ -120,6 +168,7 @@ export default function Register() {
             onChange={onChange}
             onBlur={onBlur}
             aria-invalid={!!errors.email}
+            disabled={isLoading}
           />
           {touched.email && errors.email && (
             <span className="field__error">{errors.email}</span>
@@ -135,6 +184,7 @@ export default function Register() {
             onChange={onChange}
             onBlur={onBlur}
             aria-invalid={!!errors.password}
+            disabled={isLoading}
           />
           {touched.password && errors.password && (
             <span className="field__error">{errors.password}</span>
@@ -150,14 +200,18 @@ export default function Register() {
             onChange={onChange}
             onBlur={onBlur}
             aria-invalid={!!errors.confirm}
+            disabled={isLoading}
           />
           {touched.confirm && errors.confirm && (
             <span className="field__error">{errors.confirm}</span>
           )}
         </label>
 
-        <button className="register__btn" disabled={!isValid}>
-          Продовжити
+        <button 
+          className="register__btn" 
+          disabled={!isValid || isLoading}
+        >
+          {isLoading ? "Реєстрація..." : "Продовжити"}
         </button>
       </form>
     </section>
