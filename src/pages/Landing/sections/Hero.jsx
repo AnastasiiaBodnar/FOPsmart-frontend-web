@@ -1,5 +1,7 @@
 import "./Hero.css";
 import chat from "../../../assets/chat.png";
+import { Link } from "react-router-dom";
+
 
 export default function Hero() {
   return (
@@ -19,7 +21,7 @@ export default function Hero() {
           <p>
             FOPSmart з ФОПіком імпортує твої транзакції, рахує ліміти і допомагає згенерувати звіти в один клік.
           </p>
-          <a href="#features" className="hero__cta">Спробувати зараз</a>
+          <Link to="/login" className="hero__cta">Спробувати зараз</Link>
         </div>
       </div>
     </section>
