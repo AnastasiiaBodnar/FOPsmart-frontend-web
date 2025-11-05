@@ -1,0 +1,29 @@
+.app {
+  display: grid;
+  grid-template-columns: 500px 1fr;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+.main { padding: 18px 18px 28px; }
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-radius: 14px;
+  height: 100px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.06);
+  margin-bottom: 14px;
+}
+
+.topbar h1 {
+  margin-left: 10px;
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--dark-main);
+}
+
+.content { padding-top: 12px; display: grid; gap: 14px; }
