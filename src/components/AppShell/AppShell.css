@@ -27,3 +27,11 @@
 }
 
 .content { padding-top: 12px; display: grid; gap: 14px; }
+
+.app--gated { 
+    overflow: hidden;
+}      
+
+.app--gated .main { 
+    pointer-events: none;
+} 
