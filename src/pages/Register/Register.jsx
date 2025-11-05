@@ -1,10 +1,7 @@
 import { useState, useMemo } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
-
-const API_URL = import.meta.env.PROD 
-  ? "https://fopsmart-4030403a47a5.herokuapp.com" 
-  : "";
+import { API_URL } from "../../config/api";
 
 export default function Register() {
   const navigate = useNavigate();
