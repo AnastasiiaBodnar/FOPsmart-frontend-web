@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import AppShell from "../../components/AppShell/AppShell";
-import IncomeExpenseChart from "../../components/IncomeExpenseChart/IncomeExpenseChart";
+import IncomeExpenseLineChart from "../../components/IncomeExpenseChart/IncomeExpenseChart";
 import "./Dashboard.css";
 import analyticsService from "../../services/analyticsService";
 import monobankService from "../../services/monobankService";
@@ -16,13 +16,22 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [syncing, setSyncing] = useState(false);
+  const [period, setPeriod] = useState(30); // days
 
-  const loadData = async () => {
+  const PERIODS = [
+    { value: 7, label: "Тиждень" },
+    { value: 30, label: "Місяць" },
+    { value: 90, label: "Квартал" },
+    { value: 180, label: "Півріччя" },
+    { value: 365, label: "Рік" },
+  ];
+
+  const loadData = async (days = period) => {
     setLoading(true);
     setError(null);
     
     try {
-      const dashboard = await analyticsService.getDashboard(30);
+      const dashboard = await analyticsService.getDashboard(days);
 
       setMetrics({
         balance: dashboard.income.totalAmount - dashboard.expenses.totalAmount,
@@ -63,6 +72,11 @@ export default function Dashboard() {
     }
   };
 
+  const handlePeriodChange = (days) => {
+    setPeriod(days);
+    loadData(days);
+  };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -76,42 +90,77 @@ export default function Dashboard() {
     }).format(value);
   };
 
+  const getPeriodLabel = () => {
+    const periodObj = PERIODS.find(p => p.value === period);
+    return periodObj ? periodObj.label.toLowerCase() : "період";
+  };
+
   const cards = [
     { 
-      label: "Баланс за місяць", 
+      label: `Баланс за ${getPeriodLabel()}`, 
       value: formatCurrency(metrics.balance),
       className: "card--primary"
     },
     { 
-      label: "Дохід за місяць", 
+      label: `Дохід за ${getPeriodLabel()}`, 
       value: formatCurrency(metrics.incomeMonth),
       className: "card--success"
     },
     { 
-      label: "Витрати за місяць", 
+      label: `Витрати за ${getPeriodLabel()}`, 
       value: formatCurrency(metrics.expenseMonth),
       className: "card--danger"
     },
   ];
 
   const actions = (
-    <button 
-      className="sync-btn" 
-      onClick={handleSync} 
-      disabled={syncing || loading}
-      style={{
-        padding: "10px 20px",
-        background: "var(--accent-primary)",
-        color: "white",
-        border: "none",
-        borderRadius: "8px",
-        cursor: syncing || loading ? "not-allowed" : "pointer",
-        fontWeight: "600",
-        opacity: syncing || loading ? 0.6 : 1,
-      }}
-    >
-      {syncing ? "Синхронізація..." : "Оновити дані"}
-    </button>
+    <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+      {/* Period selector */}
+      <div style={{ display: "flex", gap: "6px", background: "#f3f4f6", padding: "4px", borderRadius: "10px" }}>
+        {PERIODS.map((p) => (
+          <button
+            key={p.value}
+            onClick={() => handlePeriodChange(p.value)}
+            disabled={loading || syncing}
+            style={{
+              padding: "8px 14px",
+              background: period === p.value ? "#fff" : "transparent",
+              color: period === p.value ? "var(--dark-main)" : "#6b7280",
+              border: "none",
+              borderRadius: "8px",
+              cursor: loading || syncing ? "not-allowed" : "pointer",
+              fontSize: "14px",
+              fontWeight: period === p.value ? "700" : "500",
+              transition: "all 0.2s",
+              boxShadow: period === p.value ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
+            }}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Sync button */}
+      <button 
+        className="sync-btn" 
+        onClick={handleSync} 
+        disabled={syncing || loading}
+        style={{
+          padding: "10px 20px",
+          background: "var(--accent-primary)",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          cursor: syncing || loading ? "not-allowed" : "pointer",
+          fontWeight: "600",
+          opacity: syncing || loading ? 0.6 : 1,
+          fontSize: "14px",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {syncing ? "Синхронізація..." : "🔄 Оновити"}
+      </button>
+    </div>
   );
 
   if (loading && !metrics.balance) {
@@ -134,7 +183,7 @@ export default function Dashboard() {
             Помилка: {error}
           </p>
           <button 
-            onClick={loadData}
+            onClick={() => loadData()}
             style={{
               padding: "10px 20px",
               background: "var(--accent-primary)",
@@ -165,7 +214,7 @@ export default function Dashboard() {
 
       <section className="panel">
         <h3>Динаміка доходів / витрат</h3>
-        <IncomeExpenseChart data={chartData} />
+        <IncomeExpenseLineChart data={chartData} />
       </section>
 
       <section className="panel">
@@ -182,7 +231,8 @@ export default function Dashboard() {
                 className="limit__fill" 
                 style={{ 
                   width: `${Math.min(limit.usedPct, 100)}%`,
-                  background: limit.usedPct >= 90 ? "#ef4444" : limit.usedPct >= 80 ? "#f59e0b" : "#22c55e"
+                  background: limit.usedPct >= 90 ? "#ef4444" : limit.usedPct >= 80 ? "#f59e0b" : "#22c55e",
+                  transition: "width 0.3s ease"
                 }} 
               />
             </div>
