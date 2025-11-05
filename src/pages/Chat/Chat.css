@@ -1,0 +1,10 @@
+.ai-chat { background:#fff; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,.06);
+  padding:20px; display:grid; grid-template-rows: auto 1fr auto; gap:16px; min-height: calc(100vh - 220px); }
+
+.ai-chat__starter { display:flex; gap:12px; }
+.ai-chat__starter button { background:#eef2ff; border:1px solid #e0e7ff; padding:10px 14px; border-radius:14px;
+  font-weight:700; color:#2a2e5b; cursor:pointer; }
+.ai-chat__starter button:hover { transform: translateY(-1px); }
+
+.ai-chat__list { overflow-y:auto; display:grid; gap:14px; padding:4px 0 8px; }
+.ai-chat__input { position:sticky; bottom:0; }
