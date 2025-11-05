@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import AppShell from "../../components/AppShell/AppShell";
+import IncomeExpenseChart from "../../components/IncomeExpenseChart/IncomeExpenseChart";
 import "./Dashboard.css";
 import analyticsService from "../../services/analyticsService";
 import monobankService from "../../services/monobankService";
@@ -11,6 +12,7 @@ export default function Dashboard() {
     expenseMonth: null,
   });
   const [limit, setLimit] = useState(null);
+  const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [syncing, setSyncing] = useState(false);
@@ -35,6 +37,10 @@ export default function Dashboard() {
           currentUAH: dashboard.limitStatus.currentIncome,
           limitUAH: dashboard.limitStatus.limit,
         });
+      }
+
+      if (dashboard.dailyTrends && dashboard.dailyTrends.length > 0) {
+        setChartData(dashboard.dailyTrends);
       }
     } catch (err) {
       console.error("Dashboard load error:", err);
@@ -159,9 +165,7 @@ export default function Dashboard() {
 
       <section className="panel">
         <h3>Динаміка доходів / витрат</h3>
-        <div className="chart-placeholder">
-          Графік зʼявиться у наступній версії
-        </div>
+        <IncomeExpenseChart data={chartData} />
       </section>
 
       <section className="panel">
