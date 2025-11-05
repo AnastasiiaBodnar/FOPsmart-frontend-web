@@ -1,10 +1,7 @@
 import { useState, useMemo } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
-
-const API_URL = import.meta.env.PROD 
-  ? "https://fopsmart-4030403a47a5.herokuapp.com" 
-  : "";
+import { API_URL } from "../../config/api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -82,7 +79,14 @@ export default function Login() {
         </div>
 
         {apiError && (
-          <div className="api-error">
+          <div className="api-error" style={{
+            background: "#fee",
+            color: "#c00",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            borderLeft: "3px solid #c00"
+          }}>
             {apiError}
           </div>
         )}

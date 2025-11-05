@@ -2,15 +2,26 @@ import { useEffect, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import MonoConnectModal from "../MonoConnectModal/MonoConnectModal";
 import "./AppShell.css";
+import monobankService from "../../services/monobankService";
 
 export default function AppShell({ title, actions = null, children }) {
-  const [hasMono, setHasMono] = useState(true);     
+  const [hasMono, setHasMono] = useState(false);
   const [checked, setChecked] = useState(false);
 
+  const checkMonoStatus = async () => {
+    try {
+      const status = await monobankService.getStatus();
+      setHasMono(status.connected);
+    } catch (error) {
+      console.error("Monobank status check error:", error);
+      setHasMono(false);
+    } finally {
+      setChecked(true);
+    }
+  };
+
   useEffect(() => {
-    const present = !!localStorage.getItem("mono_token"); // тимчасово, до бекенду
-    setHasMono(present);
-    setChecked(true);
+    checkMonoStatus();
   }, []);
 
   const onConnected = () => {
@@ -25,7 +36,7 @@ export default function AppShell({ title, actions = null, children }) {
 
       <main className="main" aria-hidden={gated}>
         <header className="topbar">
-          <h1>{title || "Текс"}</h1>
+          <h1>{title || "Dashboard"}</h1>
           {actions && <div className="actions">{actions}</div>}
         </header>
 
