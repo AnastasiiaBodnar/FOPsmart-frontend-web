@@ -6,15 +6,15 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header__container">
-        <a href="/" className="header__logo">
+        <a href="#home" className="header__logo">
           <img src={logo} alt="FOPSmart" />
           <span className="logoText">FOPSmart</span>
         </a>
 
         <nav className="header__nav">
-          <a href="#home">Головна</a>
           <a href="#how">Як це працює?</a>
           <a href="#features">Можливості</a>
+          <a href="#problem">Проблеми</a>
         </nav>
 
         <div className="header__buttons">

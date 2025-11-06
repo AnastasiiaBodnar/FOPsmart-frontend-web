@@ -1,7 +1,16 @@
 .header {
+  position: fixed;            
+  top: 0;                     
+  left: 0;
+  width: 100%;              
+  z-index: 1000;            
   background: var(--background);
   padding: 20px 0;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
 }
+
 
 .header__container {
   display: grid;
@@ -30,28 +39,27 @@
 }
 
 .header__logo img {
-  height: 40px;
+  height: 70px;
 }
 
 .logoText {
-  margin-left: -15px;
+  margin-left: -19px;
   font-weight: 900;
-  font-size: 25px;
+  font-size: 50px;
   color: var(--dark-main);
 }
 
 .header__nav {
   display: flex;
   justify-content: center;
-  gap: 40px;
-  flex: 1;
+  gap: 90px;
 }
 
 .header__nav a {
   text-decoration: none;
   color: var(--dark-secondary);
   font-weight: 500;
-  font-size: 20px;
+  font-size: 36px;
   transition: color 0.2s ease;
 }
 
@@ -69,7 +77,7 @@
   background: transparent;
   font-weight: 700;
   border: none;
-  font-size: 20px;
+  font-size: 38px;
   color: var(--dark-main);
   cursor: pointer;
   padding: 6px 10px;
@@ -86,9 +94,9 @@
   color: var(--background);
   border: none;
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 10px;
   font-weight: 550;
-  font-size: 20px;
+  font-size: 38px;
   cursor: pointer;
    transition: background 0.25s ease, transform 0.1s ease;
 }
