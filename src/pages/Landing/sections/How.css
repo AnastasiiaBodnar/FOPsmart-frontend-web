@@ -92,58 +92,53 @@
   margin: 0 auto;
 }
 
-@media (max-width: 968px) {
-  .how-it-works-intro h2 {
-    font-size: 32px;
-  }
-
-  .steps {
-    flex-direction: column;
-    gap: 50px;
-    align-items: center;
-  }
-
-  .steps::before {
-    display: none;
-  }
-
-  .step {
-    max-width: 400px;
-  }
-
-  .step h3 {
-    font-size: 18px;
-  }
-
-  .step p {
-    max-width: 100%;
-  }
+@media (max-width: 1440px) {
+  .container { max-width: 1120px; }
+  .how-it-works-intro h2 { font-size: 38px; }
+  .step-number { width: 92px; height: 92px; font-size: 38px; }
 }
 
-@media (max-width: 480px) {
-  .how-it-works {
-    padding: 60px 0;
-  }
+@media (max-width: 1024px) {
+  .how-it-works { padding: 72px 0; }
+  .how-it-works-intro h2 { font-size: 34px; }
+  .how-it-works-intro p { font-size: 15px; }
 
-  .how-it-works-intro h2 {
-    font-size: 28px;
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 32px;
+    justify-items: center;
   }
+  .step { max-width: 420px; }
+  .step-number { width: 88px; height: 88px; font-size: 36px; }
+  .step h3 { font-size: 18px; }
+  .step p { max-width: 90%; }
+}
 
-  .how-it-works-intro p {
-    font-size: 14px;
-  }
+@media (max-width: 768px) {
+  .how-it-works { padding: 64px 0; }
+  .how-it-works-intro { margin-bottom: 40px; }
+  .how-it-works-intro h2 { font-size: 30px; }
+  .how-it-works-intro p { font-size: 14px; }
 
-  .step-number {
-    width: 80px;
-    height: 80px;
-    font-size: 36px;
+  .steps {
+    grid-template-columns: 1fr;  
+    gap: 32px;
   }
+  .step { max-width: 500px; }
+  .step-number { width: 82px; height: 82px; font-size: 34px; margin-bottom: 18px; }
+  .step h3 { font-size: 17px; margin-bottom: 10px; }
+  .step p { font-size: 13.5px; max-width: 100%; }
+}
 
-  .step h3 {
-    font-size: 16px;
-  }
+@media (max-width: 320px) {
+  .how-it-works { padding: 48px 0; }
+  .container { padding: 0 14px; }
 
-  .step p {
-    font-size: 13px;
-  }
+  .how-it-works-intro h2 { font-size: 24px; }
+  .how-it-works-intro p { font-size: 13px; }
+
+  .step-number { width: 64px; height: 64px; font-size: 28px; }
+  .step h3 { font-size: 15px; }
+  .step p { font-size: 12.5px; }
 }
