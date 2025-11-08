@@ -1,21 +1,66 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from "react";
 import AppShell from "../../components/AppShell/AppShell";
-import './Profile.css';
+import profileService from "../../services/profileService";
+import monobankService from "../../services/monobankService";
+import "./Profile.css";
 
-const Profile = () => {
+export default function Profile() {
   const [formData, setFormData] = useState({
-    firstName: 'Іван',
-    lastName: 'Іванов',
-    email: 'ivan.fop@gmail.com',
-    password: '••••••••',
-    userGroup: '3 група'
+    firstName: '',
+    lastName: '',
+    email: '',
+    fopGroup: 1
   });
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [connectedBanks, setConnectedBanks] = useState([]);
 
-  const [connectedBanks] = useState([
-    { name: 'Monobank', status: 'connected' }
-  ]);
+  const loadProfileData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await profileService.getProfile();
+      
+      setFormData({
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        email: data.email || '',
+        fopGroup: data.fopGroup || 1
+      });
+    } catch (err) {
+      console.error('Error loading profile:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadMonobankStatus = async () => {
+    try {
+      const status = await monobankService.getStatus();
+      
+      if (status.connected) {
+        setConnectedBanks([
+          {
+            name: 'Monobank',
+            status: 'connected',
+            clientName: status.connection?.clientName
+          }
+        ]);
+      }
+    } catch (err) {
+      console.error('Error loading monobank status:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadProfileData();
+    loadMonobankStatus();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,26 +70,95 @@ const Profile = () => {
     }));
   };
 
-  const handleSaveChanges = () => {
-    console.log('Saving changes:', formData);
-    alert('Зміни збережено!');
+  const handleSaveChanges = async () => {
+    setSaving(true);
+    setError(null);
+    setSuccessMessage('');
+
+    try {
+      await profileService.updateProfile({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email
+      });
+
+      await profileService.updateFopSettings(formData.fopGroup);
+
+      setSuccessMessage('Зміни успішно збережено!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Error saving profile:', err);
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
-    console.log('Changes cancelled');
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    loadProfileData();
+    setError(null);
+    setSuccessMessage('');
   };
 
   const handleAddBank = () => {
     console.log('Adding new bank');
   };
 
+  if (loading) {
+    return (
+      <AppShell title="Профіль">
+        <div style={{ padding: "40px", textAlign: "center" }}>
+          <p style={{ fontSize: "18px", color: "var(--dark-grey)" }}>
+            Завантаження даних...
+          </p>
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (error && !formData.email) {
+    return (
+      <AppShell title="Профіль">
+        <div style={{ padding: "40px", textAlign: "center" }}>
+          <p style={{ fontSize: "18px", color: "#e11d48", marginBottom: "16px" }}>
+            Помилка: {error}
+          </p>
+          <button 
+            onClick={() => loadProfileData()}
+            style={{
+              padding: "10px 20px",
+              background: "var(--accent-primary)",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "600",
+            }}
+          >
+            Спробувати ще раз
+          </button>
+        </div>
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell title="Профіль">
       <div className="profile-content">
+        {error && (
+          <div className="alert alert-error">
+            <span className="alert-icon">⚠️</span>
+            <span>{error}</span>
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="alert alert-success">
+            <span className="alert-icon">✓</span>
+            <span>{successMessage}</span>
+          </div>
+        )}
+
         <section className="personal-info-section">
           <h2>Особисті дані</h2>
           
@@ -89,48 +203,15 @@ const Profile = () => {
               <label htmlFor="userGroup">Група оподаткування</label>
               <select
                 id="userGroup"
-                name="userGroup"
-                value={formData.userGroup}
+                name="fopGroup"
+                value={formData.fopGroup}
                 onChange={handleInputChange}
                 className="form-input"
               >
-                <option value="1 група">1 група</option>
-                <option value="2 група">2 група</option>
-                <option value="3 група">3 група</option>
-                <option value="4 група">4 група</option>
+                <option value={1}>1 група</option>
+                <option value={2}>2 група</option>
+                <option value={3}>3 група</option>
               </select>
-            </div>
-
-            <div className="form-group full-width">
-              <label htmlFor="password">Пароль</label>
-              <div className="password-input-wrapper">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="form-input"
-                />
-                <button
-                  type="button"
-                  className="password-toggle-btn"
-                  onClick={togglePasswordVisibility}
-                  aria-label={showPassword ? "Приховати пароль" : "Показати пароль"}
-                >
-                  {showPassword ? (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                      <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                  ) : (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                  )}
-                </button>
-              </div>
             </div>
           </div>
         </section>
@@ -141,28 +222,32 @@ const Profile = () => {
           </div>
 
           <div className="banks-list">
-            {connectedBanks.map((bank, index) => (
-              <div key={index} className="bank-item">
-                <div className="bank-info">
-                  <span className="bank-name">{bank.name}</span>
-                  <span className="bank-status connected">Підключено</span>
-                </div>
+            {connectedBanks.length === 0 ? (
+              <div className="empty-state">
+                <p>Банки ще не підключені</p>
               </div>
-            ))}
+            ) : (
+              connectedBanks.map((bank, index) => (
+                <div key={index} className="bank-item">
+                  <div className="bank-info">
+                    <span className="bank-name">{bank.name}</span>
+                    <span className="bank-status connected">Підключено</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </section>
 
         <div className="form-actions">
-          <button className="btn-cancel" onClick={handleCancel}>
+          <button className="btn-cancel" onClick={handleCancel} disabled={saving}>
             Скасувати
           </button>
-          <button className="btn-save" onClick={handleSaveChanges}>
-            Зберегти зміни
+          <button className="btn-save" onClick={handleSaveChanges} disabled={saving}>
+            {saving ? 'Збереження...' : 'Зберегти зміни'}
           </button>
         </div>
       </div>
     </AppShell>
   );
-};
-
-export default Profile;
+}

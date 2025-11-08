@@ -5,6 +5,43 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 16px;
+  color: #6e6e73;
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.alert-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
 /* Особисті дані */
 .personal-info-section {
   margin-bottom: 40px;
@@ -109,7 +146,6 @@ select.form-input {
   padding-right: 40px;
 }
 
-/* Банки секція */
 .banks-section {
   margin-bottom: 32px;
   padding-top: 32px;
@@ -151,6 +187,15 @@ select.form-input {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.empty-state {
+  padding: 32px;
+  text-align: center;
+  color: #6e6e73;
+  font-size: 14px;
+  background-color: #f8f8f8;
+  border-radius: 12px;
 }
 
 .bank-item {
@@ -210,7 +255,6 @@ select.form-input {
   color: var(--dark-main);
 }
 
-/* Кнопки дій */
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -257,7 +301,17 @@ select.form-input {
   transform: translateY(0);
 }
 
-/* Responsive */
+.btn-cancel:disabled,
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-save:disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
 @media (max-width: 1200px) {
   .form-grid {
     grid-template-columns: 1fr;
