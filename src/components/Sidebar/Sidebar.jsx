@@ -34,7 +34,7 @@ export default function Sidebar() {
           <span>AI-чат</span>
         </NavLink>
 
-        <NavLink to="/settings" className="item">
+        <NavLink to="/profile" className="item">
           <span>Профіль</span>
         </NavLink>
       </nav>
