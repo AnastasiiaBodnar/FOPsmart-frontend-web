@@ -1,8 +1,6 @@
 .hero {
   background: var(--background);
-  padding: 10px 40px;
-  padding-top: 200px;
-  padding-bottom: 100px;
+  padding: 200px 40px 100px 40px;
   min-height: calc(100vh - 80px);
   display: flex;
   align-items: center;
@@ -59,9 +57,7 @@
   box-shadow: 0 6px 20px rgba(124, 77, 255, 0.4);
 }
 
-.hero__cta:active {
-  transform: translateY(0);
-}
+.hero__cta:active { transform: translateY(0); }
 
 .hero__phone {
   display: flex;
@@ -123,76 +119,38 @@
   border-radius: inherit;
 }
 
+@media (max-width: 1440px) {
+  .hero__content h1 { font-size: 60px; }
+  .hero__content p { font-size: 18px; max-width: 500px; }
+  .phone { width: 320px; height: 640px; }
+}
+
 @media (max-width: 1024px) {
   .hero__container {
     grid-template-columns: 1fr;
     gap: 60px;
     text-align: center;
   }
-
-  .hero__content {
-    align-items: center;
-  }
-
-  .hero__content h1 {
-    font-size: 48px;
-  }
-
-  .hero__content p {
-    max-width: 600px;
-  }
-
-  .phone {
-    width: 300px;
-    height: 600px;
-  }
+  .hero__content { align-items: center; }
+  .hero__content h1 { font-size: 48px; }
+  .hero__content p { max-width: 600px; }
+  .phone { width: 300px; height: 600px; }
 }
 
 @media (max-width: 768px) {
-  .hero {
-    padding: 60px 24px;
-    min-height: auto;
-  }
-
-  .hero__container {
-    gap: 40px;
-  }
-
-  .hero__content h1 {
-    font-size: 36px;
-  }
-
-  .hero__content p {
-    font-size: 18px;
-  }
-
-  .phone {
-    width: 260px;
-    height: 520px;
-    border-radius: 40px;
-  }
-
-  .phone__screen {
-    border-radius: 32px;
-  }
+  .hero { padding: 160px 24px 60px; min-height: auto; }
+  .hero__container { gap: 40px; }
+  .hero__content h1 { font-size: 34px; }
+  .hero__content p { font-size: 16px; }
+  .hero__cta { font-size: 16px; padding: 14px 32px; }
+  .phone { width: 260px; height: 520px; border-radius: 40px; }
+  .phone__screen { border-radius: 32px; }
 }
 
-@media (max-width: 480px) {
-  .hero__content h1 {
-    font-size: 28px;
-  }
-
-  .hero__content p {
-    font-size: 16px;
-  }
-
-  .hero__cta {
-    font-size: 16px;
-    padding: 14px 32px;
-  }
-
-  .phone {
-    width: 220px;
-    height: 440px;
-  }
+@media (max-width: 320px) {
+  .hero { padding: 150px 16px 48px; }
+  .hero__content h1 { font-size: 24px; }
+  .hero__content p { font-size: 14px; }
+  .hero__cta { font-size: 14px; padding: 12px 24px; }
+  .phone { width: 200px; height: 400px; }
 }
