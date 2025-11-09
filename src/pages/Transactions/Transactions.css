@@ -223,6 +223,7 @@
   color: var(--dark-grey);
 }
 
+/* Responsive */
 @media (max-width: 1440px) {
   .filters-bar {
     grid-template-columns: 2fr 1fr 1fr 1fr auto;
