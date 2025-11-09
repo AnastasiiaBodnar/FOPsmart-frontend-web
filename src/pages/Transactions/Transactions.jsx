@@ -1,247 +1,245 @@
-import { useState, useEffect, useMemo } from "react";
-import AppShell from "../../components/AppShell/AppShell";
-import transactionsService from "../../services/transactionsService";
-import "./Transactions.css";
+import { useState, useEffect } from 'react';
+import './Transactions.css';
+import AppShell from '../../components/AppShell/AppShell';
+
+const API_URL = 'https://fopsmart-4030403a47a5.herokuapp.com/api';
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pagination, setPagination] = useState({
-    total: 0,
-    page: 1,
-    limit: 50
-  });
-
+  const [categories, setCategories] = useState([
+    { value: 'all', label: ' Всі категорії' }
+  ]);
   const [filters, setFilters] = useState({
-    search: "",
-    type: "",
-    dateFrom: "",
-    dateTo: "",
-    category: "",
-    fopOnly: true
+    search: '',
+    dateFrom: '',
+    dateTo: '',
+    type: 'all', 
+    mcc: null 
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 5,
+    total: 0
   });
 
   useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/transactions/mcc-categories`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const mccCategories = data.categories.map(cat => ({
+            value: cat.mcc,
+            label: `${cat.nameUk}`,
+            parentCategory: cat.parentCategory
+          }));
+          
+          setCategories([
+            { value: 'all', label: ' Всі категорії' },
+            ...mccCategories
+          ]);
+        }
+      } catch (err) {
+        console.error('Failed to load categories:', err);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  useEffect(() => {
+    const loadTransactions = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          setError('Потрібна авторизація');
+          setLoading(false);
+          return;
+        }
+
+        const params = new URLSearchParams();
+
+        params.append('limit', pagination.limit);
+        params.append('offset', (pagination.page - 1) * pagination.limit);
+
+        if (filters.search) params.append('search', filters.search);
+        if (filters.dateFrom) params.append('dateFrom', filters.dateFrom);
+        if (filters.dateTo) params.append('dateTo', filters.dateTo);
+        if (filters.type !== 'all') params.append('type', filters.type);
+        if (filters.mcc && filters.mcc !== 'all') params.append('mcc', filters.mcc);
+ 
+        params.append('fopOnly', 'true');
+
+        const response = await fetch(`${API_URL}/transactions?${params.toString()}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Не вдалося завантажити транзакції');
+        }
+
+        const data = await response.json();
+        
+        setTransactions(data.transactions || []);
+        setPagination(prev => ({
+          ...prev,
+          total: data.pagination?.total || 0
+        }));
+
+      } catch (err) {
+        console.error('Error loading transactions:', err);
+        setError(err.message || 'Помилка завантаження');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadTransactions();
-  }, [pagination.page]);
-
-  const loadTransactions = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const offset = (pagination.page - 1) * pagination.limit;
-      
-      const data = await transactionsService.getTransactions({
-        ...filters,
-        type: filters.type || 'all',
-        limit: pagination.limit,
-        offset: offset,
-        fopOnly: filters.fopOnly
-      });
-
-      setTransactions(data.transactions || []);
-      setPagination(prev => ({
-        ...prev,
-        total: data.pagination?.total || 0
-      }));
-    } catch (err) {
-      console.error('Load transactions error:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const applyFilters = () => {
-    setPagination(prev => ({ ...prev, page: 1 }));
-    loadTransactions();
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      search: "",
-      type: "",
-      dateFrom: "",
-      dateTo: "",
-      category: "",
-      fopOnly: true
-    });
-    setPagination(prev => ({ ...prev, page: 1 }));
-    setTimeout(() => loadTransactions(), 100);
-  };
-
-  const handleExport = () => {
-    console.log("Експорт транзакцій...");
-    transactionsService.exportToCsv(filters);
-  };
+  }, [filters, pagination.page, pagination.limit]);
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("uk-UA", {
-      style: "currency",
-      currency: "UAH",
-      minimumFractionDigits: 0,
-    }).format(Math.abs(amount));
+    const amountInUAH = Math.abs(amount) / 100;
+    return new Intl.NumberFormat('uk-UA', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amountInUAH) + ' грн';
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("uk-UA", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
+    return date.toLocaleDateString('uk-UA', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
     });
   };
 
   const getTypeClass = (amount) => {
-    return amount > 0 ? "type-income" : "type-expense";
-  };
-
-  const getAmountClass = (amount) => {
-    return amount > 0 ? "amount-income" : "amount-expense";
+    return amount > 0 ? 'income' : 'expense';
   };
 
   const getStatusBadge = (hold) => {
     if (hold) {
-      return <span className="status-badge status-pending">Очікує</span>;
+      return <span className="status-badge hold"> Утримання</span>;
     }
-    return <span className="status-badge status-completed">Виконано</span>;
+    return <span className="status-badge completed"> Завершено</span>;
   };
 
-  if (loading && transactions.length === 0) {
-    return (
-      <AppShell title="Транзакції">
-        <div style={{ padding: "40px", textAlign: "center" }}>
-          <p style={{ fontSize: "18px", color: "var(--dark-grey)" }}>
-            Завантаження транзакцій...
-          </p>
-        </div>
-      </AppShell>
-    );
-  }
+  const handleFilterChange = (field, value) => {
+    setFilters(prev => ({ ...prev, [field]: value }));
+    setPagination(prev => ({ ...prev, page: 1 })); 
+  };
 
-  if (error) {
-    return (
-      <AppShell title="Транзакції">
-        <div style={{ padding: "40px", textAlign: "center" }}>
-          <p style={{ fontSize: "18px", color: "#e11d48", marginBottom: "16px" }}>
-            Помилка: {error}
-          </p>
-          <button 
-            onClick={loadTransactions}
-            style={{
-              padding: "10px 20px",
-              background: "var(--accent-primary)",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "600",
-            }}
-          >
-            Спробувати ще раз
-          </button>
-        </div>
-      </AppShell>
-    );
-  }
+  const handleExport = () => {
+    alert('Експорт у розробці! Скоро буде доступна функція завантаження CSV/Excel');
+  };
+
+  const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   return (
-    <AppShell 
-      title="Транзакції"
-      actions={
-        <button className="btn-export" onClick={handleExport}>
-          Експорт
-        </button>
-      }
-    >
-      <div className="transactions-page">
+    <AppShell title="Транзакції">
         <div className="filters-bar">
           <div className="filter-group">
-            <label htmlFor="type">Тип</label>
+            <label> Пошук</label>
+            <input
+              type="text"
+              className="filter-input"
+              placeholder="Назва або контрагент..."
+              value={filters.search}
+              onChange={(e) => handleFilterChange('search', e.target.value)}
+            />
+          </div>
+
+          <div className="filter-group">
+            <label> Категорія</label>
             <select
-              id="type"
-              name="type"
               className="filter-select"
-              value={filters.type}
-              onChange={handleFilterChange}
+              value={filters.mcc === null ? 'all' : filters.mcc.toString()}
+              onChange={(e) => {
+                const value = e.target.value;
+                handleFilterChange('mcc', value === 'all' ? null : parseInt(value));
+              }}
             >
-              <option value="">Всі типи</option>
-              <option value="income">Дохід</option>
-              <option value="expense">Витрата</option>
+              {categories.map(cat => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="filter-group">
-            <label htmlFor="dateFrom">Від дати</label>
+            <label> Тип</label>
+            <select
+              className="filter-select"
+              value={filters.type}
+              onChange={(e) => handleFilterChange('type', e.target.value)}
+            >
+              <option value="all">Всі</option>
+              <option value="income">Доходи</option>
+              <option value="expense">Витрати</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label> Від</label>
             <input
-              id="dateFrom"
               type="date"
-              name="dateFrom"
               className="filter-input"
               value={filters.dateFrom}
-              onChange={handleFilterChange}
+              onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
             />
           </div>
 
           <div className="filter-group">
-            <label htmlFor="dateTo">До дати</label>
+            <label> До</label>
             <input
-              id="dateTo"
               type="date"
-              name="dateTo"
               className="filter-input"
               value={filters.dateTo}
-              onChange={handleFilterChange}
+              onChange={(e) => handleFilterChange('dateTo', e.target.value)}
             />
           </div>
 
-          <div className="filter-group">
-            <label htmlFor="search">Пошук</label>
-            <input
-              id="search"
-              type="text"
-              name="search"
-              className="filter-input"
-              placeholder="Назва, опис..."
-              value={filters.search}
-              onChange={handleFilterChange}
-            />
-          </div>
-
-          <button className="btn-export" onClick={applyFilters} disabled={loading}>
-            {loading ? "Завантаження..." : "Застосувати"}
-          </button>
-
-          <button 
-            className="btn-export" 
-            onClick={resetFilters} 
-            disabled={loading}
-            style={{ background: "#f3f4f6", color: "var(--dark-main)" }}
-          >
-            Скинути
-          </button>
         </div>
 
         <div className="transactions-table-wrapper">
-          {transactions.length === 0 ? (
+          {error ? (
+            <div className="error-state">
+              <h3>Помилка завантаження</h3>
+              <p>{error}</p>
+              <button 
+                className="btn-retry" 
+                onClick={() => window.location.reload()}
+              >
+                Спробувати ще раз
+              </button>
+            </div>
+          ) : loading ? (
+            <div className="loading-state">
+              <div className="spinner"></div>
+              <p>Завантаження транзакцій...</p>
+            </div>
+          ) : transactions.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📭</div>
-              <div className="empty-state-text">Транзакції не знайдено</div>
-              <div className="empty-state-hint">
-                {filters.fopOnly 
-                  ? "Спробуйте змінити фільтри або додайте транзакції на ФОП рахунок"
-                  : "Спробуйте змінити фільтри або синхронізуйте транзакції"}
-              </div>
+              <div className="empty-icon">📭</div>
+              <h3>Транзакцій не знайдено</h3>
+              <p>Спробуйте змінити параметри фільтрації</p>
             </div>
           ) : (
             <>
@@ -249,8 +247,8 @@ export default function Transactions() {
                 <thead>
                   <tr>
                     <th>Дата</th>
-                    <th>Категорія</th>
                     <th>Опис</th>
+                    <th>Категорія</th>
                     <th>Сума</th>
                     <th>Тип</th>
                     <th>Статус</th>
@@ -259,22 +257,15 @@ export default function Transactions() {
                 </thead>
                 <tbody>
                   {transactions.map((transaction) => (
-                    <tr key={transaction.id}>
-                      <td className="date-cell">
-                        {formatDate(transaction.date)}
-                      </td>
+                    <tr key={transaction.id} className="transaction-row">
+                      <td className="date-cell">{formatDate(transaction.date)}</td>
+                      <td className="description-cell">{transaction.description}</td>
                       <td className="category-cell">
-                        {transaction.category || 'Без категорії'}
+                        <span className="category-badge" style={{ backgroundColor: transaction.color || '#e0e0e0' }}>
+                          {transaction.category || 'Без категорії'}
+                        </span>
                       </td>
-                      <td className="description-cell" title={transaction.description}>
-                        {transaction.description}
-                        {transaction.comment && (
-                          <div style={{ fontSize: '12px', color: '#999', marginTop: '4px' }}>
-                            {transaction.comment}
-                          </div>
-                        )}
-                      </td>
-                      <td className={`amount-cell ${getAmountClass(transaction.amount)}`}>
+                      <td className={`amount-cell ${getTypeClass(transaction.amount)}`}>
                         {transaction.amount > 0 ? "+" : ""}
                         {formatCurrency(transaction.amount)}
                       </td>
@@ -287,7 +278,7 @@ export default function Transactions() {
                         {getStatusBadge(transaction.hold)}
                       </td>
                       <td className="bank-cell">
-                        {transaction.account?.type === 'fop' ? ' ФОП' : ' Особистий'}
+                        {transaction.account?.isFop ? ' ФОП' : ' Особистий'}
                       </td>
                     </tr>
                   ))}
@@ -295,54 +286,54 @@ export default function Transactions() {
               </table>
 
               {pagination.total > pagination.limit && (
-                <div style={{ 
-                  padding: '20px', 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  gap: '10px',
-                  alignItems: 'center'
-                }}>
+                <div className="pagination-wrapper">
                   <button
-                    onClick={() => setPagination(prev => ({ ...prev, page: Math.max(1, prev.page - 1) }))}
+                    className="pagination-btn"
+                    onClick={() => setPagination(prev => ({ ...prev, page: 1 }))}
                     disabled={pagination.page === 1 || loading}
-                    style={{
-                      padding: '8px 16px',
-                      background: pagination.page === 1 ? '#f3f4f6' : 'var(--accent-primary)',
-                      color: pagination.page === 1 ? '#999' : '#fff',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: pagination.page === 1 ? 'not-allowed' : 'pointer',
-                      fontWeight: '600'
-                    }}
+                    title="Перша сторінка"
                   >
-                    ← Назад
+                    ⟪
                   </button>
 
-                  <span style={{ color: 'var(--dark-grey)', fontWeight: '500' }}>
-                    Сторінка {pagination.page} з {Math.ceil(pagination.total / pagination.limit)}
+                  <button
+                    className="pagination-btn"
+                    onClick={() => setPagination(prev => ({ ...prev, page: Math.max(1, prev.page - 1) }))}
+                    disabled={pagination.page === 1 || loading}
+                    title="Попередня сторінка"
+                  >
+                    ←
+                  </button>
+
+                  <span className="pagination-info">
+                    Сторінка {pagination.page} з {totalPages}
+                    <span className="pagination-count">
+                      ({pagination.total} {pagination.total === 1 ? 'транзакція' : pagination.total < 5 ? 'транзакції' : 'транзакцій'})
+                    </span>
                   </span>
 
                   <button
+                    className="pagination-btn"
                     onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
-                    disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit) || loading}
-                    style={{
-                      padding: '8px 16px',
-                      background: pagination.page >= Math.ceil(pagination.total / pagination.limit) ? '#f3f4f6' : 'var(--accent-primary)',
-                      color: pagination.page >= Math.ceil(pagination.total / pagination.limit) ? '#999' : '#fff',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: pagination.page >= Math.ceil(pagination.total / pagination.limit) ? 'not-allowed' : 'pointer',
-                      fontWeight: '600'
-                    }}
+                    disabled={pagination.page >= totalPages || loading}
+                    title="Наступна сторінка"
                   >
-                    Вперед →
+                    →
+                  </button>
+
+                  <button
+                    className="pagination-btn"
+                    onClick={() => setPagination(prev => ({ ...prev, page: totalPages }))}
+                    disabled={pagination.page >= totalPages || loading}
+                    title="Остання сторінка"
+                  >
+                    ⟫
                   </button>
                 </div>
               )}
             </>
           )}
         </div>
-      </div>
     </AppShell>
   );
 }
