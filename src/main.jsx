@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Chat from "./pages/Chat/Chat.jsx";
 import Profile from "./pages/Profile/Profile.jsx";
 import Transactions from "./pages/Transactions/Transactions.jsx"
+import Analytics from "./pages/Analytics/Analytics.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -21,7 +22,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/dashboard" element={<Dashboard />} /> 
         <Route path="/chat" element={<Chat />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="transactions" element={<Transactions />} />
+        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
