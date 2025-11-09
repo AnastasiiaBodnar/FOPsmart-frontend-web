@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Transactions.css';
 import AppShell from '../../components/AppShell/AppShell';
+import ManualTransactionModal from '../../components/ManualTransactionModal/ManualTransactionModal';
 
 const API_URL = 'https://fopsmart-4030403a47a5.herokuapp.com/api';
 
@@ -8,6 +9,7 @@ export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState([
     { value: 'all', label: ' Всі категорії' }
   ]);
@@ -25,92 +27,96 @@ export default function Transactions() {
   });
 
   useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/transactions/mcc-categories`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const mccCategories = data.categories.map(cat => ({
-            value: cat.mcc,
-            label: `${cat.nameUk}`,
-            parentCategory: cat.parentCategory
-          }));
-          
-          setCategories([
-            { value: 'all', label: ' Всі категорії' },
-            ...mccCategories
-          ]);
-        }
-      } catch (err) {
-        console.error('Failed to load categories:', err);
-      }
-    };
-
     loadCategories();
   }, []);
 
   useEffect(() => {
-    const loadTransactions = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const token = localStorage.getItem('token');
-        
-        if (!token) {
-          setError('Потрібна авторизація');
-          setLoading(false);
-          return;
-        }
-
-        const params = new URLSearchParams();
-
-        params.append('limit', pagination.limit);
-        params.append('offset', (pagination.page - 1) * pagination.limit);
-
-        if (filters.search) params.append('search', filters.search);
-        if (filters.dateFrom) params.append('dateFrom', filters.dateFrom);
-        if (filters.dateTo) params.append('dateTo', filters.dateTo);
-        if (filters.type !== 'all') params.append('type', filters.type);
-        if (filters.mcc && filters.mcc !== 'all') params.append('mcc', filters.mcc);
- 
-        params.append('fopOnly', 'true');
-
-        const response = await fetch(`${API_URL}/transactions?${params.toString()}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Не вдалося завантажити транзакції');
-        }
-
-        const data = await response.json();
-        
-        setTransactions(data.transactions || []);
-        setPagination(prev => ({
-          ...prev,
-          total: data.pagination?.total || 0
-        }));
-
-      } catch (err) {
-        console.error('Error loading transactions:', err);
-        setError(err.message || 'Помилка завантаження');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadTransactions();
   }, [filters, pagination.page, pagination.limit]);
+
+  const loadCategories = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/transactions/mcc-categories`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const mccCategories = data.categories.map(cat => ({
+          value: cat.mcc,
+          label: `${cat.nameUk}`,
+          parentCategory: cat.parentCategory
+        }));
+        
+        setCategories([
+          { value: 'all', label: ' Всі категорії' },
+          ...mccCategories
+        ]);
+      }
+    } catch (err) {
+      console.error('Failed to load categories:', err);
+    }
+  };
+
+  const loadTransactions = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setError('Потрібна авторизація');
+        setLoading(false);
+        return;
+      }
+
+      const params = new URLSearchParams();
+
+      params.append('limit', pagination.limit);
+      params.append('offset', (pagination.page - 1) * pagination.limit);
+
+      if (filters.search) params.append('search', filters.search);
+      if (filters.dateFrom) params.append('dateFrom', filters.dateFrom);
+      if (filters.dateTo) params.append('dateTo', filters.dateTo);
+      if (filters.type !== 'all') params.append('type', filters.type);
+      if (filters.mcc && filters.mcc !== 'all') params.append('mcc', filters.mcc);
+
+      params.append('fopOnly', 'true');
+
+      const response = await fetch(`${API_URL}/transactions?${params.toString()}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Не вдалося завантажити транзакції');
+      }
+
+      const data = await response.json();
+      
+      setTransactions(data.transactions || []);
+      setPagination(prev => ({
+        ...prev,
+        total: data.pagination?.total || 0
+      }));
+
+    } catch (err) {
+      console.error('Error loading transactions:', err);
+      setError(err.message || 'Помилка завантаження');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTransactionCreated = () => {
+    loadTransactions();
+  };
 
   const formatCurrency = (amount) => {
     const amountInUAH = Math.abs(amount) / 100;
@@ -216,11 +222,21 @@ export default function Transactions() {
             />
           </div>
 
+          <div className="filter-group" style={{ display: 'flex', alignItems: 'flex-end' }}>
+            <button 
+              className="btn-add-transaction"
+              onClick={() => setIsModalOpen(true)}
+              title="Додати транзакцію вручну"
+            >
+              ➕ Додати
+            </button>
+          </div>
         </div>
 
         <div className="transactions-table-wrapper">
           {error ? (
             <div className="error-state">
+              <div className="error-icon">❌</div>
               <h3>Помилка завантаження</h3>
               <p>{error}</p>
               <button 
@@ -278,7 +294,7 @@ export default function Transactions() {
                         {getStatusBadge(transaction.hold)}
                       </td>
                       <td className="bank-cell">
-                        {transaction.account?.isFop ? ' ФОП' : ' Особистий'}
+                        {transaction.account?.isFop ? '🏦 ФОП' : '👤 Особистий'}
                       </td>
                     </tr>
                   ))}
@@ -334,6 +350,12 @@ export default function Transactions() {
             </>
           )}
         </div>
+
+        <ManualTransactionModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={handleTransactionCreated}
+        />
     </AppShell>
   );
 }

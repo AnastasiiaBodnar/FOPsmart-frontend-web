@@ -105,7 +105,6 @@
   box-shadow: 0 2px 8px rgba(124, 77, 255, 0.3);
 }
 
-/* ТАБЛИЦЯ */
 .transactions-table-wrapper {
   background: #fff;
   border-radius: 16px;
@@ -153,7 +152,6 @@
   color: var(--dark-main);
 }
 
-/* Спеціальні стилі для колонок */
 .date-cell {
   font-weight: 600;
   color: var(--dark-grey);
@@ -229,7 +227,6 @@
   white-space: nowrap;
 }
 
-/* ПАГІНАЦІЯ */
 .pagination-wrapper {
   display: flex;
   align-items: center;
@@ -289,7 +286,6 @@
   margin-top: 2px;
 }
 
-/* СТАНИ ЗАВАНТАЖЕННЯ */
 .loading-state,
 .empty-state,
 .error-state {
@@ -343,7 +339,6 @@
   margin: 0;
 }
 
-/* ERROR STATE */
 .error-icon {
   font-size: 64px;
   margin-bottom: 16px;
@@ -380,7 +375,6 @@
   box-shadow: 0 6px 20px rgba(124, 77, 255, 0.4);
 }
 
-/* КАТЕГОРІЯ BADGE */
 .category-cell {
   font-size: 13px;
 }
@@ -395,7 +389,6 @@
   white-space: nowrap;
 }
 
-/* АДАПТИВ */
 @media (max-width: 1200px) {
   .filters-bar {
     grid-template-columns: 1fr 1fr;
@@ -432,4 +425,31 @@
     width: 34px;
     height: 34px;
   }
+}
+
+
+.btn-add-transaction {
+  padding: 12px 24px;
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  width: 100%;
+}
+
+.btn-add-transaction:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  background: #059669;
+}
+
+.btn-add-transaction:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
