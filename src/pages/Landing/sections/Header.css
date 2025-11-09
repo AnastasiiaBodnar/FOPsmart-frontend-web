@@ -1,19 +1,20 @@
 .header {
-  position: fixed;            
-  top: 0;                     
+  position: fixed;
+  top: 0;
   left: 0;
-  width: 100%;              
-  z-index: 1000;            
+  width: 100%;
+  z-index: 1000;
   background: var(--background);
-  padding: 20px 0;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding: 18px 0;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
 }
 
 .header__container {
   display: grid;
   grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
 }
 
 .header__logo {
@@ -25,50 +26,49 @@
 }
 
 .header__logo img {
-  height: 70px;
+  height: 48px;
 }
 
 .logoText {
-  margin-left: -19px;
+  margin-left: -10px;
   font-weight: 900;
-  font-size: 50px;
+  font-size: clamp(20px, 2.5vw, 32px);
   color: var(--dark-main);
 }
 
 .header__nav {
   display: flex;
   justify-content: center;
-  gap: 90px;
+  gap: 36px;
 }
 
 .header__nav a {
-  margin-top: 10px;
+  margin-top: 2px;
   text-decoration: none;
   color: var(--dark-secondary);
-  font-weight: 500;
-  font-size: 36px;
+  font-weight: 600;
+  font-size: clamp(14px, 1.6vw, 18px);
   transition: color 0.2s ease;
 }
 
-.header__nav a:hover {
-  color: var(--accent-primary);
-}
+.header__nav a:hover { color: var(--accent-primary); }
 
 .header__buttons {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
 }
 
 .btnLogin {
   background: transparent;
-  font-weight: 700;
+  font-weight: 800;
   border: none;
-  font-size: 38px;
+  font-size: clamp(14px, 1.6vw, 18px);
   color: var(--dark-main);
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 6px 8px;
   transition: color 0.2s ease, background 0.2s ease;
+  text-decoration: none;
 }
 
 .btnLogin:hover {
@@ -80,24 +80,18 @@
   background: var(--dark-main);
   color: var(--background);
   border: none;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 10px;
-  font-weight: 550;
-  font-size: 38px;
-  margin-right: 35px;
+  font-weight: 700;
+  font-size: clamp(14px, 1.6vw, 18px);
+  margin-right: 0;
   cursor: pointer;
-   transition: background 0.25s ease, transform 0.1s ease;
+  transition: background 0.25s ease, transform 0.1s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
-.btnRegistr:hover {
-  background: var(--accent-primary);
-  transform: translateY(-1px);
-}
-
-.btnLogin, .btnRegistr {
-    text-decoration: none; 
-    display: inline-block; 
-}
+.btnRegistr:hover { background: var(--accent-primary); transform: translateY(-1px); }
 
 .header__burger {
   display: none;
@@ -111,238 +105,121 @@
 }
 
 .header__burger span {
-  width: 28px;
-  height: 3px;
+  width: 24px;
+  height: 2.5px;
   background: var(--dark-main);
   border-radius: 3px;
   transition: all 0.3s ease;
 }
 
-.header__burger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(8px, 8px);
-}
+.header__burger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+.header__burger.active span:nth-child(2) { opacity: 0; }
+.header__burger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
 
-.header__burger.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.header__burger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(8px, -8px);
-}
-
-.header__mobile-menu {
-  display: none;
-}
-
+.header__mobile-menu { display: none; }
 .no-scroll { overflow: hidden; }
 
-@media (max-width: 1200px) {
-  .header__logo img {
-    height: 50px;
-  }
-  
-  .logoText {
-    font-size: 35px;
-    margin-left: -14px;
-  }
-  
-  .header__nav {
-    gap: 50px;
-  }
-
-  .header__nav a {
-    font-size: 28px; 
-  }
-
-  .btnLogin {
-    font-size: 24px;
-  }
-  
-  .btnRegistr {
-    font-size: 24px;
-    padding: 10px 18px;
-  }
+@media (max-width: 1440px) {
+  .header__container { padding: 0 22px; }
+  .header__logo img { height: 44px; }
+  .logoText { font-size: clamp(18px, 2vw, 28px); }
+  .header__nav { gap: 28px; }
 }
 
-@media (max-width: 900px) {
-  .header__container {
-    padding: 0 30px;
-  }
-  
-  .header__nav { 
-    display: flex; 
-    gap: 20px; 
-  }
+@media (max-width: 1200px) {
+  .header__nav a { font-size: 16px; }
+}
 
-  .header__nav a {
-    font-size: 20px; 
-  }
-  
-  .header__logo img {
-    height: 40px;
-  }
-  
-  .logoText {
-    font-size: 28px;
-  }
-  
-  .btnLogin {
-    font-size: 20px;
-    padding: 8px 12px;
-  }
-  
-  .btnRegistr {
-    margin-right: -10px;
-    font-size: 20px;
-    padding: 10px 16px;
-    border-radius: 8px;
-  }
+@media (max-width: 1024px) {
+  .header__container { padding: 0 18px; gap: 14px; }
+  .header__logo img { height: 40px; }
+  .logoText { font-size: 22px; margin-left: -8px; }
+  .header__nav { gap: 22px; }
+  .header__nav a { font-size: 15px; }
+  .btnLogin, .btnRegistr { font-size: 15px; }
 }
 
 @media (max-width: 768px) {
+  .header { padding: 14px 0; }
   .header__container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0 16px;
   }
-  
-  .header__logo img {
-    height: 40px;
-  }
-  
-  .header__nav { 
-    display: none;
-  }
-
-  .logoText {
-    font-size: 28px;
-    margin-left: -12px;
-  }
-  
-  .header__buttons {
-    display: none;
-  }
-  
-  .header__burger {
-    display: flex;
-  }
-  
+  .header__logo img { height: 34px; }
+  .logoText { font-size: 20px; margin-left: -6px; }
+  .header__nav { display: none; }
+  .header__buttons { display: none; }
+  .header__burger { display: flex; }
   .header__mobile-menu {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 101;
   }
-  
   .header__mobile-menu.active {
     display: block;
     animation: fadeIn 0.3s ease;
   }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   .header__mobile-content {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 75%;
-    max-width: 320px;
+    top: 0; right: 0;
+    width: 78%;
+    max-width: 300px;
     height: 100vh;
-    background: white;
-    padding: 80px 24px 24px;
+    background: var(--background);
+    padding: 72px 20px 20px;
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
     animation: slideInRight 0.3s ease;
   }
-  
-  @keyframes slideInRight {
-    from {
-      transform: translateX(100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-  
+  @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
   .header__mobile-nav {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    margin-bottom: 32px;
+    gap: 18px;
+    margin-bottom: 28px;
   }
-  
   .header__mobile-nav a {
     text-decoration: none;
     color: var(--dark-secondary);
-    font-weight: 600;
-    font-size: 20px;
-    padding: 12px 0;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 10px 0;
     border-bottom: 1px solid var(--grey);
     transition: color 0.2s ease;
   }
-  
-  .header__mobile-nav a:hover {
-    color: var(--accent-primary);
-  }
-  
   .header__mobile-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
-  
-  .header__mobile-buttons .btnLogin {
-    width: 100%;
-    text-align: center;
-    padding: 14px;
-    font-size: 18px;
-    border: 2px solid var(--dark-main);
-    border-radius: 8px;
-  }
-  
+  .header__mobile-buttons .btnLogin,
   .header__mobile-buttons .btnRegistr {
     width: 100%;
     text-align: center;
-    padding: 14px;
-    font-size: 18px;
+    padding: 12px;
+    font-size: 16px;
     border-radius: 8px;
   }
+  .header__mobile-buttons .btnLogin { border: 2px solid var(--dark-main); }
 }
 
 @media (max-width: 480px) {
-  .header__container {
-    padding: 0 16px;
-  }
-  
-  .header__logo img {
-    height: 35px;
-  }
-  
-  .logoText {
-    font-size: 24px;
-    margin-left: -10px;
-  }
-  
-  .header__burger span {
-    width: 24px;
-  }
-  
-  .header__mobile-content {
-    width: 85%;
-  }
-  
-  .header__mobile-nav a {
-    font-size: 18px;
+  .header__container { padding: 0 14px; }
+  .header__burger span { width: 22px; }
+  .header__mobile-content { width: 85%; }
+  .header__mobile-nav a { font-size: 15px; }
+}
+
+@media (max-width: 320px) {
+  .logoText { font-size: 18px; margin-left: -4px; }
+  .header__burger span { width: 20px; }
+  .header__mobile-buttons .btnLogin,
+  .header__mobile-buttons .btnRegistr {
+    font-size: 15px;
+    padding: 10px;
   }
 }

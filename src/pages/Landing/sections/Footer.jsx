@@ -12,9 +12,9 @@ export default function Footer() {
         <div className="footer__col footer__menu">
           <h3>Меню:</h3>
           <ul>
-            <li><a href="#home">Головна</a></li>
             <li><a href="#how">Як це працює?</a></li>
             <li><a href="#features">Можливості</a></li>
+            <li><a href="#problem">Проблеми</a></li>
           </ul>
         </div>
 

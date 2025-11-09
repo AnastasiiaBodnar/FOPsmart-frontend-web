@@ -78,7 +78,6 @@ export default function Chat() {
     } catch (error) {
       console.error("Chat error:", error);
       
-      // Додаємо повідомлення про помилку
       const errorMessage = {
         role: "bot",
         text: "Вибачте, сталася помилка при обробці вашого запиту. Спробуйте ще раз або перефразуйте питання.",
@@ -113,16 +112,6 @@ export default function Chat() {
       title="AI-чат"
       actions={
         <div className="chat-actions">
-          {aiHealth && aiHealth.status !== "healthy" && (
-            <span className="ai-status ai-status--offline">
-               AI сервіс недоступний
-            </span>
-          )}
-          {aiHealth && aiHealth.status === "healthy" && (
-            <span className="ai-status ai-status--online">
-              ✓ AI підключений
-            </span>
-          )}
           <button onClick={clearChat} className="btn-clear">
             Очистити чат
           </button>

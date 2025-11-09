@@ -1,0 +1,200 @@
+.problems-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px;
+  background: #ffffff;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.section-header h2 {
+  font-size: 42px;
+  color: #1f2937;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.section-header p {
+  font-size: 18px;
+  color: #6b7280;
+}
+
+.problems-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.problem-card {
+  background: #fff;
+  border: 2px solid #f3f4f6;
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.problem-card:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 10px 40px rgba(124, 58, 237, 0.15);
+  transform: translateY(-5px);
+}
+
+.problem-card:hover::before {
+  transform: scaleY(1);
+}
+
+.problem-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.problem-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.problem-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ef4444;
+  line-height: 1.4;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, #ef4444, transparent);
+  margin: 20px 0;
+}
+
+.solution-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.solution-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.solution-text {
+  font-size: 16px;
+  color: #10b981;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@media (max-width: 1440px) {
+  .section-header h2 {
+    font-size: 38px;
+  }
+  .problem-card {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .section-header h2 {
+    font-size: 34px;
+  }
+
+  .problems-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+  }
+
+  .problem-card {
+    padding: 26px;
+  }
+
+  .problem-title {
+    font-size: 18px;
+  }
+
+  .solution-text {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .problems-section {
+    padding: 60px 15px;
+  }
+
+  .section-header h2 {
+    font-size: 30px;
+  }
+
+  .problems-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .problem-card {
+    padding: 22px;
+  }
+
+  .problem-icon {
+    font-size: 26px;
+  }
+
+  .solution-icon {
+    font-size: 22px;
+  }
+
+  .problem-title {
+    font-size: 17px;
+  }
+
+  .solution-text {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-header h2 {
+    font-size: 26px;
+  }
+
+  .section-header p {
+    font-size: 15px;
+  }
+
+  .problem-card {
+    padding: 20px;
+  }
+
+  .problem-icon {
+    font-size: 24px;
+  }
+
+  .solution-icon {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 320px) {
+  .problems-section {
+    padding: 50px 12px;
+  }
+
+  .section-header h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .problem-title {
+    font-size: 16px;
+  }
+
+  .solution-text {
+    font-size: 13px;
+  }
+}

@@ -115,7 +115,6 @@ export default function Dashboard() {
 
   const actions = (
     <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-      {/* Period selector */}
       <div style={{ display: "flex", gap: "6px", background: "#f3f4f6", padding: "4px", borderRadius: "10px" }}>
         {PERIODS.map((p) => (
           <button
@@ -140,26 +139,6 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Sync button */}
-      <button 
-        className="sync-btn" 
-        onClick={handleSync} 
-        disabled={syncing || loading}
-        style={{
-          padding: "10px 20px",
-          background: "var(--accent-primary)",
-          color: "white",
-          border: "none",
-          borderRadius: "8px",
-          cursor: syncing || loading ? "not-allowed" : "pointer",
-          fontWeight: "600",
-          opacity: syncing || loading ? 0.6 : 1,
-          fontSize: "14px",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {syncing ? "Синхронізація..." : "🔄 Оновити"}
-      </button>
     </div>
   );
 
