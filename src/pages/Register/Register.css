@@ -146,3 +146,100 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.password-field { position: relative; }
+.password-field input { padding-right: 44px; }
+
+.toggle-password {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--dark-secondary);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toggle-password:hover { color: var(--accent-primary); }
+
+@media (max-width: 1440px) {
+  .register__card {
+    max-width: 520px;
+    padding: 26px;
+  }
+  .register__head h2 {
+    font-size: 26px;
+  }
+  .register__brand {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .register {
+    padding: 300px 12px;
+  }
+  .register__card {
+    max-width: 480px;
+    padding: 24px;
+  }
+  .register__head h2 {
+    font-size: 24px;
+  }
+  .row-2 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .register__btn {
+    font-size: 15px;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .register__card {
+    max-width: 400px;
+    padding: 22px;
+  }
+  .register__head h2 {
+    font-size: 22px;
+  }
+  .register__brand {
+    font-size: 26px;
+  }
+  .field input,
+  .field select {
+    font-size: 15px;
+    padding: 12px 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .register {
+    padding: 24px 10px;
+  }
+  .register__brand {
+    font-size: 22px;
+  }
+  .register__card {
+    max-width: 280px;
+    padding: 18px;
+    border-radius: 14px;
+  }
+  .register__head h2 {
+    font-size: 16px;
+  }
+  .field input,
+  .field select {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  .register__btn {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
