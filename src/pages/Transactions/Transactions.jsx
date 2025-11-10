@@ -228,7 +228,7 @@ export default function Transactions() {
               onClick={() => setIsModalOpen(true)}
               title="Додати транзакцію вручну"
             >
-              ➕ Додати
+              + Додати
             </button>
           </div>
         </div>
@@ -294,7 +294,7 @@ export default function Transactions() {
                         {getStatusBadge(transaction.hold)}
                       </td>
                       <td className="bank-cell">
-                        {transaction.account?.isFop ? '🏦 ФОП' : '👤 Особистий'}
+                        {transaction.account?.isFop ? ' ФОП' : ' Особистий'}
                       </td>
                     </tr>
                   ))}

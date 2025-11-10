@@ -187,7 +187,6 @@
   background: #e5e7eb;
 }
 
-/* Responsive */
 @media (max-width: 640px) {
   .modal-content {
     width: 95%;

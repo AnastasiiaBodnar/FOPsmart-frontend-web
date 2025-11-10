@@ -56,6 +56,8 @@
 }
 
 .mono-btn{
+  width: 100%;
+  align-items: center;
   height: 48px;
   border-radius: 14px;
   border: 0;
